@@ -23,14 +23,16 @@ while (activeGame && turn < 3)
     else
     {
         string[] moves = ["shoot", "block", "load"];
+        Random rand = new Random();
         Thread.Sleep(1500);
-        Methods.MakeMove(player2, moves[2]); //Add logic for player2 restructure how its done
+        Methods.MakeMove(player2, moves[rand.Next(2)]); //Add logic for player2 restructure how its done
         turn--;
     }
 
 
     // player1.LoadStats();
 
+    Methods.IsGameFinished(player1, player2, ref activeGame);
     // if (player1.life == 0 || player2.life == 0)
     // {
     //     Console.WriteLine("Game over");

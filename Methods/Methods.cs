@@ -43,4 +43,21 @@ class Methods
             player.Block();
         }
     }
+
+    public static void IsGameFinished(Player player1, Player player2, ref bool activeGame)
+    {
+        Console.WriteLine("checking for game over");
+        if (player1.life == 0 || player2.life == 0)
+        {
+            Console.WriteLine("Game over");
+            Effects.WriteSlow("Would you like to play again?", 50);
+            Console.WriteLine("yes/no");
+            if (Console.ReadLine() == "no")
+            {
+                activeGame = false;
+            }
+
+
+        }
+    }
 }
