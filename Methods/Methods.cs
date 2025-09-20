@@ -1,14 +1,5 @@
 class Methods
 {
-    public static void WriteSlow(string text, int delay)
-    {
-        foreach (char c in text)
-        {
-            Console.Write(c);
-            Thread.Sleep(delay); // delay in milliseconds per character
-        }
-        Console.WriteLine();
-    }
 
     public static void ReadRules()
     {
