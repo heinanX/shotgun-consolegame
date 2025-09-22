@@ -36,12 +36,12 @@ class Player
     }
     public void LoadGun()
     {
-        Console.WriteLine($"{playerName} loads their gun.");
+        Console.WriteLine($"{playerName} loads a bullet.");
         shots++;
     }
     public void Block()
     {
-        Console.WriteLine($"{playerName} blocks the attack.");
+        Console.WriteLine($"{playerName} blocks.");
     }
     public void FoundSpaceRock()
     {
@@ -72,7 +72,6 @@ class Player
         Console.WriteLine($"shots: {shots}");
         Console.WriteLine($"life: {life}");
         Console.WriteLine($"spaceRock: {spaceRock}");
-
     }
 
 

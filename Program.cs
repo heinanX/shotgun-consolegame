@@ -6,9 +6,9 @@ bool activeGame = true;
 Player? player1 = null;
 Player player2 = new("Player 2");
 
-while (activeGame && turn < 3)
+while (activeGame)
 {
-    Methods.SetPlayer(ref player1);
+    GamePlay.SetPlayer(ref player1);
 
     // player1.LoadStats();
     // Console.WriteLine("");
@@ -16,35 +16,21 @@ while (activeGame && turn < 3)
 
     if (turn == 0)
     {
-        Methods.PromptMove(player1);
+        GamePlay.PromptMove(player1);
         Effects.WriteSlow("...", 150);
         turn++;
     }
     else
     {
-        string[] moves = ["shoot", "block", "load"];
-        Random rand = new Random();
-        Thread.Sleep(1500);
-        Methods.MakeMove(player2, moves[rand.Next(2)]); //Add logic for player2 restructure how its done
+        GamePlay.AutomatedMove(player2);
         turn--;
     }
 
 
     // player1.LoadStats();
 
-    Methods.IsGameFinished(player1, player2, ref activeGame);
-    // if (player1.life == 0 || player2.life == 0)
-    // {
-    //     Console.WriteLine("Game over");
-    //     Methods.WriteSlow("Would you like to play again?", 50);
-    //     Console.WriteLine("yes/no");
-    //     if (Console.ReadLine() == "no")
-    //     {
-    //         activeGame = false;
-    //     }
+    GamePlay.IsGameFinished(player1, player2, ref activeGame);
 
-
-    // }
 
 
     // Console.WriteLine(turn);
