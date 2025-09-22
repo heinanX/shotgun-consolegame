@@ -9,4 +9,9 @@ class Effects
         }
         Console.WriteLine();
     }
+
+    public static void WriteEllipsis()
+    {
+        WriteSlow("...", 150);
+    }
 }

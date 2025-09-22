@@ -1,5 +1,7 @@
-Need to add logic that prevents a player from seeing the shooting option when there are no shots available
+Add comparison for moves
 
-both player1 and 2
+Add ShotGun logic
 
-further logic for player 2
+Add SpaceRock logic (change name?)
+
+Add stats for won vs lost games. (Inside ReadGameData)

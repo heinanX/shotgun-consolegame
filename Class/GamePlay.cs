@@ -1,26 +1,25 @@
 class GamePlay
 {
-    // int round = 0;
-    // int activeRoundCount = 0;
-    static List<(string playerName, string action)> currentMoves = [];  //check incoming moves
+    int round = 0;
+    List<(string playerName, string action)> currentMoves = [];  //check incoming moves
 
 
-    public static void ReadRules()
+    public void ReadRules()
     {
 
     }
 
-    public static void SetPlayer(ref Player player)
+    public Player SetPlayer(Player? player)
     {
         if (player == null)
         {
             Console.WriteLine("Enter Player Name:");
             player = new Player(Console.ReadLine() ?? "");
         }
-        return;
+        return player;
     }
 
-    static void MakeMove(Player player, string action)
+    void MakeMove(Player player, string action)
     {
         if (action.ToLower() == "shoot")
         {
@@ -37,10 +36,10 @@ class GamePlay
         currentMoves.Add((player.playerName, action));
     }
 
-    public static void PromptMove(Player player)
+    public void PromptMove(Player player)
     {
         string action = "";
-        while (action == "" && action != "shoot" && action != "load" && action != "block")
+        while (action != "shoot" && action != "load" && action != "block")
         {
             if (player.shots > 0)
             {
@@ -55,24 +54,32 @@ class GamePlay
         }
         MakeMove(player, action);
     }
-    public static void AutomatedMove(Player player)
+    public void AutomatedMove(Player player)
     {
-        List<string> moves = ["shoot", "block", "load"];
-        if (player.shots == 0) moves.Remove("shoot");
+        List<string> possibleMoves = ["shoot", "block", "load"];
+        if (player.shots == 0) possibleMoves.Remove("shoot");
+
         Random rand = new Random();
         Thread.Sleep(1500);
-        MakeMove(player, moves[rand.Next(moves.Count)]);
+        MakeMove(player, possibleMoves[rand.Next(possibleMoves.Count)]);
     }
 
-    static void CheckRound()
+    public void CheckRound()
     {
-        foreach (var i in currentMoves)
-        {
-            Console.WriteLine(i);
-        }
+
         if (currentMoves.Count == 2)
         {
+
+            // --------------------- del later
+            Console.WriteLine("Stats:");
+            foreach (var i in currentMoves)
+            {
+                Console.WriteLine($"{i.playerName}: {i.action}");
+            }
+            //--------------------------------
+            //don't know if clear is the one to use
             currentMoves.Clear();
+            Effects.WriteEllipsis();
         }
         // if (currentMoves.Count > 1)
         // {
@@ -83,10 +90,15 @@ class GamePlay
         // }
     }
 
-    public static void IsGameFinished(Player player1, Player player2, ref bool activeGame)
+    void ReadGameData()
     {
-        CheckRound();
-        Console.WriteLine("checking for game over");
+        Console.WriteLine($"Games Played: {round}");
+        //Console.WriteLine($"Rounds Won: {round}"); // ADD THIS LATER
+    }
+
+    public void IsGameFinished(Player player1, Player player2, ref bool activeGame)
+    {
+        //Console.WriteLine("checking for game over");
         if (player1.life == 0 || player2.life == 0)
         {
             Console.WriteLine("Game over");
@@ -97,6 +109,9 @@ class GamePlay
             {
                 activeGame = false;
             }
+            round++;
+            ReadGameData();
         }
     }
+
 }

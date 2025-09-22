@@ -1,40 +1,36 @@
-﻿// int round = 0;
-// int activeRoundCount = 0;
-int turn = 0;
+﻿int playerTurn = 0;
 bool activeGame = true;
 
 Player? player1 = null;
 Player player2 = new("Player 2");
+GamePlay game = new();
 
 while (activeGame)
 {
-    GamePlay.SetPlayer(ref player1);
+    player1 = game.SetPlayer(player1);
 
-    // player1.LoadStats();
-    // Console.WriteLine("");
-    // player2.LoadStats();
-
-    if (turn == 0)
+    if (playerTurn == 0)
     {
-        GamePlay.PromptMove(player1);
+        game.PromptMove(player1);
         Effects.WriteSlow("...", 150);
-        turn++;
+        playerTurn++;
     }
     else
     {
-        GamePlay.AutomatedMove(player2);
-        turn--;
+        game.AutomatedMove(player2);
+        playerTurn--;
     }
 
+    game.CheckRound();
 
     // player1.LoadStats();
 
-    GamePlay.IsGameFinished(player1, player2, ref activeGame);
+    game.IsGameFinished(player1, player2, ref activeGame);
 
 
 
-    // Console.WriteLine(turn);
-    // turn++;
+    // Console.WriteLine(playerTurn);
+    // playerTurn++;
 
     //activeGame = false;
     // player1.FoundSpaceRock();
