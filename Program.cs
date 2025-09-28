@@ -1,13 +1,17 @@
 ﻿int playerTurn = 0;
 bool activeGame = true;
 
-Player? player1 = null;
-Player player2 = new("Player 2");
 GamePlay game = new();
+Player player1 = GamePlay.SetPlayer();
+Player player2 = new("Player 2");
+
+Effects.WriteSlow("Initiating game", 50);
+Thread.Sleep(1000);
+Effects.WriteSlow($"{player2.playerName} has joined...", 50);
+Thread.Sleep(1000);
 
 while (activeGame)
 {
-    player1 = game.SetPlayer(player1);
 
     if (playerTurn == 0)
     {

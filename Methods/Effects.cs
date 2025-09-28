@@ -14,4 +14,15 @@ class Effects
     {
         WriteSlow("...", 150);
     }
+
+    public static string ValidateInput(string msg)
+    {
+        string input = "";
+        while (string.IsNullOrWhiteSpace(input))
+        {
+            Console.WriteLine($"{msg}");
+            input = Console.ReadLine() ?? "";
+        }
+        return input;
+    }
 }
