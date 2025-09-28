@@ -12,7 +12,7 @@ Thread.Sleep(1000);
 
 while (activeGame)
 {
-
+    Console.WriteLine("");
     if (playerTurn == 0)
     {
         game.PromptMove(player1);

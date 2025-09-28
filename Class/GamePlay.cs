@@ -105,7 +105,7 @@ class GamePlay
 
         if (currentMoves.Count == 2)
         {
-
+            Console.WriteLine("");
             // --------------------- del later
             Console.WriteLine("Stats:");
             foreach (var i in currentMoves)
