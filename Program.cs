@@ -13,24 +13,27 @@ Thread.Sleep(1000);
 while (activeGame)
 {
     Console.WriteLine("");
-    if (playerTurn == 0)
-    {
-        game.PromptMove(player1);
-        Effects.WriteSlow("...", 150);
-        playerTurn++;
-    }
-    else
-    {
-        game.AutomatedMove(player2);
-        playerTurn--;
-    }
+    // if (playerTurn == 0)
+    // {
+    //     game.PromptMove(player1);
+    //     Effects.WriteSlow("...", 150);
+    //     playerTurn++;
+    // }
+    // else
+    // {
+    //     game.AutomatedMove(player2);
+    //     playerTurn--;
+    // }
+    playerTurn = game.PlayRound(playerTurn, player1);
+    playerTurn = game.PlayRound(playerTurn, player2);
+
 
     game.CheckRound();
+    game.SaveMoves();
 
     // player1.LoadStats();
 
     game.IsGameFinished(player1, player2, ref activeGame);
-
 
 
     // Console.WriteLine(playerTurn);
