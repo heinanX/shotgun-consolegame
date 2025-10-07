@@ -1,7 +1,11 @@
+using System.Drawing;
+
 class GamePlay
 {
-    int round = 0;
-    List<(string playerName, string action)> currentMoves = [];
+    public List<(int, string)> possibleMoves = [(1, "shoot"), (2, "shotgun"), (3, "load"), (4, "block"), (5, "secretmove"),];
+    List<Round> rounds = [];
+    int currentRound = 1;
+    List<Move> currentMoves = [];
 
     public static Player SetPlayer()
     {
@@ -9,78 +13,25 @@ class GamePlay
         return player;
     }
 
-    static int GenerateLuck()
+    public int PlayRound(int turn, Player p)
     {
-        Random rand = new();
-        return rand.Next(6);
-    }
-
-    public static void FoundSpaceRock(Player player)
-    {
-        Thread.Sleep(1000);
-        Effects.WriteSlow($"{player.playerName} stumbles on a rock.", 50);
-        Thread.Sleep(1500);
-        Effects.WriteSlow($"... {player.playerName} pockets the rock.", 50);
-        player.spaceRock++;
-        Thread.Sleep(1000);
-    }
-
-    public static void UseSpaceRock(Player player)
-    {
-        Thread.Sleep(1000);
-        Effects.WriteSlow($"{player.playerName} feels a warmth radiating from their pocket.", 50);
-        Thread.Sleep(1000);
-        Effects.WriteSlow("A wise man's whisper resonates around you", 50);
-        Thread.Sleep(1000);
-        Effects.WriteSlow($"Use the rock, {player.playerName}~", 150);
-        Thread.Sleep(1500);
-        Effects.WriteSlow($"... {player.playerName} throws space rock.", 50);
-        player.spaceRock--;
-        Thread.Sleep(1000);
-    }
-
-    void MakeMove(Player player, string action)
-    {
-        if (player.spaceRock > 0)
+        if (turn == 0)
         {
-            UseSpaceRock(player);
+            PromptMove(p);
+            Effects.WriteSlow("...", 150);
+            turn++;
         }
         else
         {
-            switch (action)
-            {
-                case "shoot":
-                    player.ShootGun();
-                    break;
-                case "load":
-                    player.LoadGun();
-                    break;
-                case "block":
-                    player.Block();
-                    break;
-                case "shotgun":
-                    player.UseShotGun(player);
-                    break;
-            }
-
-            player.luck += player.luck + GenerateLuck();
-            if (player.luck > 15)
-            {
-                FoundSpaceRock(player);
-            }
-
-            currentMoves.Add((player.playerName, action));
+            AutomatedMove(p);
+            turn--;
         }
+        return turn;
     }
-
-    static bool IsValidAction(string action, int playerShots)
-    {
-        return action == "block" || action == "load" || (action == "shoot" && playerShots > 0) || (action == "shotgun" && playerShots > 2);
-    }
-
     public void PromptMove(Player player)
     {
         string action = "";
+        player.LoadStats();
         string msg = player.shots > 2 ? "use shotgun, block or load" : player.shots > 0 ? "shoot, load or block" : "load or block";
         while (!IsValidAction(action, player.shots))
         {
@@ -89,8 +40,10 @@ class GamePlay
         }
         MakeMove(player, action);
     }
+
     public void AutomatedMove(Player player)
     {
+        player.LoadStats();
         List<string> possibleMoves = ["shoot", "block", "load", "shotgun"];
         if (player.shots == 0) possibleMoves.Remove("shoot");
         if (player.shots <= 3) possibleMoves.Remove("shotgun");
@@ -100,35 +53,114 @@ class GamePlay
         MakeMove(player, possibleMoves[rand.Next(possibleMoves.Count)]);
     }
 
+    void MakeMove(Player p, string action)
+    {
+        if (p.meteorite == 1)
+        {
+            UseSecretMove(p);
+        }
+        else
+        {
+            switch (action)
+            {
+                case "shoot":
+                    p.ShootGun(p);
+                    break;
+                case "load":
+                    p.LoadGun(p);
+                    break;
+                case "block":
+                    p.Block(p);
+                    break;
+                case "shotgun":
+                    p.UseShotGun(p);
+                    break;
+            }
+            Move newMove = new(p, 1, action);
+
+            p.luck += GenerateLuck();
+            if (p.luck > 15)
+            {
+                Foundmeteorite(p);
+            }
+
+            currentMoves.Add(newMove);
+        }
+    }
+
+    public void SaveMoves()
+    {
+        FileHandler.Write(rounds);
+    }
+
+
+    static int GenerateLuck()
+    {
+        Random rand = new();
+        return rand.Next(6);
+    }
+
+    public static void Foundmeteorite(Player player)
+    {
+        Thread.Sleep(1000);
+        Effects.WriteSlow($"{player.playerName} stumbles on a rock.", 50);
+        Thread.Sleep(1500);
+        Effects.WriteSlow($"... {player.playerName} pockets the rock.", 50);
+        player.meteorite++;
+        Thread.Sleep(1000);
+    }
+
+    public static void UseSecretMove(Player p)
+    {
+        Thread.Sleep(1000);
+        Effects.WriteSlow($"{p.playerName} feels a warmth radiating from their pocket.", 50);
+        Thread.Sleep(1000);
+        Effects.WriteSlow("A wise man's whisper resonates", 50);
+        Thread.Sleep(1000);
+        Effects.WriteSlow($"Use the force... meteorite , {p.playerName}~", 150);
+        Thread.Sleep(1500);
+        Effects.WriteSlow($"... {p.playerName} throws meteorite.", 50);
+        p.meteorite--;
+        Thread.Sleep(1000);
+    }
+
+
+    static bool IsValidAction(string action, int playerShots)
+    {
+        return action == "block" || action == "load" || (action == "shoot" && playerShots > 0) || (action == "shotgun" && playerShots > 2);
+    }
+
+
+
     public void CheckRound()
     {
 
         if (currentMoves.Count == 2)
         {
+            string result = GameLogic.CompareMoves(currentMoves[0], currentMoves[1]);
+            Console.WriteLine($"-------");
+            Console.WriteLine(result);
             Console.WriteLine("");
             // --------------------- del later
-            Console.WriteLine("Stats:");
-            foreach (var i in currentMoves)
-            {
-                Console.WriteLine($"{i.playerName}: {i.action}");
-            }
-            //--------------------------------
-            //don't know if clear is the one to use
+            Round newRound = new(currentRound, currentMoves[0], currentMoves[1]);
+            rounds.Add(newRound);
+            // Console.WriteLine("Stats:");
+            // foreach (var i in rounds)
+            // {
+            //     Console.WriteLine($"Round: {i.round}");
+            //     Console.WriteLine($"{i.p1Moves.actionString}");
+            //     Console.WriteLine($"{i.p2Moves.actionString}");
+            // }
+            currentRound++;
             currentMoves.Clear();
-            Effects.WriteEllipsis();
+            //Effects.WriteEllipsis();
+            Console.WriteLine($"------- Round: {currentRound}");
         }
-        // if (currentMoves.Count > 1)
-        // {
-        //     if ((currentMoves[0].action == "shot") && (currentMoves[1].action == "shoot"))
-        //     {
-        //         Console.WriteLine("Both players aims their gun, but neither hits.");
-        //     } else if ((currentMoves[0].action == "shot") && (currentMoves[1].action == "shoot"))
-        // }
     }
 
     void ReadGameData()
     {
-        Console.WriteLine($"Games Played: {round}");
+        //Console.WriteLine($"Games Played: {rounds}");
         //Console.WriteLine($"Rounds Won: {round}"); // ADD THIS LATER
     }
 
@@ -145,7 +177,7 @@ class GamePlay
             {
                 activeGame = false;
             }
-            round++;
+            //rounds++;
             ReadGameData();
         }
     }

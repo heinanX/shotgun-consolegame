@@ -1,62 +1,54 @@
-class Player
+public class Player
 {
     public string playerName;
     public int shots;
     public int life;
-    //bool ShotGun;
-    public int spaceRock;
+    public bool shotgun;
+    public int meteorite;
     public int luck;
 
     public Player(string _name)
     {
         playerName = _name;
         shots = 0;
-        //ShotGun = false;
-        spaceRock = 0;
+        shotgun = false;
+        meteorite = 0;
         life = 1;
         luck = 0;
     }
 
-    public bool ShootGun()
+    public void ShootGun(Player p)
     {
-        if (shots > 0)
-        {
-            Console.WriteLine($"{playerName} fires a shot");
-            shots--;
-            return true;
-        }
-        else
-        {
-            Console.WriteLine($"You are out of loads.");
-            return false;
-        }
+        Console.WriteLine($"{p.playerName} fires a shot");
+        shots--;
     }
 
-    public void UseShotGun(Player player)
+    public void UseShotGun(Player p)
     {
-        if (player.shots > 2)
-        {
-            Console.WriteLine($"{playerName} fires their Shotgun");
-            //ShotGun = false;
-        }
+        Console.WriteLine($"{p.playerName} fires their Shotgun");
+        shotgun = false;
     }
 
-    public void LoadGun()
+    public void LoadGun(Player p)
     {
-        Console.WriteLine($"{playerName} loads a bullet.");
+        Console.WriteLine($"{p.playerName} loads a bullet.");
         shots++;
+        if (shots == 3)
+        {
+            shotgun = true;
+        }
     }
 
-    public void Block()
+    public void Block(Player p)
     {
-        Console.WriteLine($"{playerName} blocks.");
+        Console.WriteLine($"{p.playerName} blocks.");
     }
 
     public void LoadStats()
     {
-        Console.WriteLine($"player: {playerName}");
-        Console.WriteLine($"shots: {shots}");
-        Console.WriteLine($"life: {life}");
-        Console.WriteLine($"spaceRock: {spaceRock}");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Player {playerName} stats:");
+        Console.WriteLine($"shots: {shots}, Shotgun: {shotgun}, life: {life}, meteorite: {meteorite}, luck: {luck}");
+        Console.ResetColor();
     }
 }
