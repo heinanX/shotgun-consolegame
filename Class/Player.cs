@@ -52,8 +52,7 @@ public class Player
     public void LoadStats()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"Player {playerName} stats:");
-        Console.WriteLine($"shots: {shots}, Shotgun: {shotgun}, life: {life}, meteorite: {meteorite}, luck: {luck}");
+        Console.WriteLine($"shots: {shots}");
         Console.ResetColor();
     }
 

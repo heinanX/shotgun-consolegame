@@ -53,7 +53,6 @@ class GamePlay
 
     public void AutomatedMove(Player player)
     {
-        player.LoadStats();
         List<string> possibleMoves = ["block", "load"];
         if (player.shots == 0) { possibleMoves.Remove("shoot"); }
         else
@@ -159,19 +158,14 @@ class GamePlay
         if (playedMoves.Count == 2)
         {
             string result = GameLogic.CompareMoves(playedMoves[0], playedMoves[1]);
-            Console.WriteLine($"-------");
-            Console.WriteLine(result);
             Console.WriteLine("");
-            // --------------------- del later
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine(result);
+            Console.ResetColor();
+            Console.WriteLine("");
+
             Round newRound = new(roundsPlayed, currentRound, playedMoves[0], playedMoves[1]);
             rounds.Add(newRound);
-            // Console.WriteLine("Stats:");
-            // foreach (var i in rounds)
-            // {
-            //     Console.WriteLine($"Round: {i.round}");
-            //     Console.WriteLine($"{i.p1Moves.actionString}");
-            //     Console.WriteLine($"{i.p2Moves.actionString}");
-            // }
             currentRound++;
             playedMoves.Clear();
             Console.WriteLine($"------- Round: {currentRound}");
@@ -180,10 +174,9 @@ class GamePlay
 
     public void IsGameFinished(Player player1, Player player2, ref bool activeGame)
     {
-        //Console.WriteLine("checking for game over");
         if (player1.life == 0 || player2.life == 0)
         {
-            Console.WriteLine(player1.life == 0 ? $"{player2.playerName} won the game." : $"{player1.playerName} obliterated their opponent!");
+            Console.WriteLine(player1.life == 0 ? $"Better luck next time!" : $"{player1.playerName} obliterated their opponent!");
             Console.WriteLine("Game over");
             Effects.WriteSlow("Would you like to play again?", 50);
             Console.WriteLine("yes/no");
