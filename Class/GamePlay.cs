@@ -2,6 +2,8 @@ class GamePlay
 {
     public List<(int, string)> possibleMoves = [(1, "shoot"), (2, "shotgun"), (3, "load"), (4, "block"), (5, "secretmove"),];
     List<Round> rounds = [];
+
+    int roundsPlayed = 1;
     int currentRound = 1;
     List<Move> playedMoves = [];
 
@@ -161,7 +163,7 @@ class GamePlay
             Console.WriteLine(result);
             Console.WriteLine("");
             // --------------------- del later
-            Round newRound = new(currentRound, playedMoves[0], playedMoves[1]);
+            Round newRound = new(roundsPlayed, currentRound, playedMoves[0], playedMoves[1]);
             rounds.Add(newRound);
             // Console.WriteLine("Stats:");
             // foreach (var i in rounds)
@@ -174,12 +176,6 @@ class GamePlay
             playedMoves.Clear();
             Console.WriteLine($"------- Round: {currentRound}");
         }
-    }
-
-    void ReadGameData()
-    {
-        //Console.WriteLine($"Games Played: {rounds}");
-        //Console.WriteLine($"Rounds Won: {round}"); // ADD THIS LATER
     }
 
     public void IsGameFinished(Player player1, Player player2, ref bool activeGame)
@@ -197,9 +193,8 @@ class GamePlay
             }
             player1.resetPlayerStats();
             player2.resetPlayerStats();
-            //rounds++;
+            roundsPlayed++;
             currentRound = 1;
-            ReadGameData();
         }
     }
 
