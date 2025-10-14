@@ -21,7 +21,7 @@ Clone this repository or download the project files.
 
 Open the project in your IDE (for example, Visual Studio or VS Code).
 
-Make sure you have the correct runtime installed (.NET SDK).
+Make sure you have the correct runtime installed (.NET SDK 8.0 or later).
 
 `Run the program:`
 
