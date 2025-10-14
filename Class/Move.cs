@@ -1,6 +1,5 @@
-public class Move(Player p, int action, string actionString)
+public class Move(Player p, string actionString)
 {
-    public string p = p.playerName;
-    public int action = action;
+    public Player p = p;
     public string actionString = actionString;
 }

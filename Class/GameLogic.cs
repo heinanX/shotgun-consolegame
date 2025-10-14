@@ -1,11 +1,5 @@
 static class GameLogic
 {
-
-
-    static public void ReadRules()
-    {
-
-    }
     static public Dictionary<(string, string), int> possibleOutcomes = new()
 {
     { ("block", "block"), 0 },
@@ -23,29 +17,31 @@ static class GameLogic
     { ("shoot", "shotgun"), 2 },
     { ("block", "shotgun"), 2 },
     { ("load", "shotgun"), 2 },
+    { ("shotgun", "shotgun"), 0 },
 };
 
     static public string CompareMoves(Move move1, Move move2)
     {
         var result = possibleOutcomes[(move1.actionString, move2.actionString)];
-        //Console.WriteLine($"Outcome of round: {result}");
         if (result == 1)
         {
-            return $"{move1.p} won";
+            move2.p.playerDeath();
+            return $"{move1.p.playerName} won";
         }
         else if (result == 2)
         {
-            return $"{move1.p} won";
+            move1.p.playerDeath();
+            return $"{move2.p.playerName} won";
         }
         else
         {
             if (move1.actionString == "block" && move2.actionString == "shoot")
             {
-                return $"{move1.p} narrowly escaped";
+                return $"{move1.p.playerName} narrowly escaped";
             }
             else if (move2.actionString == "block" && move1.actionString == "shoot")
             {
-                return $"{move2.p} narrowly escaped";
+                return $"{move2.p.playerName} narrowly escaped";
             }
             else
             {
@@ -53,4 +49,7 @@ static class GameLogic
             }
         }
     }
+
+
+
 }

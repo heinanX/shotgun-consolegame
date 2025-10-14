@@ -44,11 +44,25 @@ public class Player
         Console.WriteLine($"{p.playerName} blocks.");
     }
 
+    public void playerDeath()
+    {
+        life = 0;
+    }
+
     public void LoadStats()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"Player {playerName} stats:");
         Console.WriteLine($"shots: {shots}, Shotgun: {shotgun}, life: {life}, meteorite: {meteorite}, luck: {luck}");
         Console.ResetColor();
+    }
+
+    public void resetPlayerStats()
+    {
+        shots = 0;
+        shotgun = false;
+        life = 1;
+        luck = 0;
+        meteorite = 0;
     }
 }

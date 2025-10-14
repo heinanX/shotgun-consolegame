@@ -24,8 +24,11 @@ while (activeGame)
     //     game.AutomatedMove(player2);
     //     playerTurn--;
     // }
-    playerTurn = game.PlayRound(playerTurn, player1);
-    playerTurn = game.PlayRound(playerTurn, player2);
+    playerTurn = game.PlayTurn(playerTurn, player1, player2);
+    if (player2.life == 1)
+    {
+        playerTurn = game.PlayTurn(playerTurn, player2, player1);
+    }
 
 
     game.CheckRound();

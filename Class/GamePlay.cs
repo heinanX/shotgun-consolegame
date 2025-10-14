@@ -1,11 +1,9 @@
-using System.Drawing;
-
 class GamePlay
 {
     public List<(int, string)> possibleMoves = [(1, "shoot"), (2, "shotgun"), (3, "load"), (4, "block"), (5, "secretmove"),];
     List<Round> rounds = [];
     int currentRound = 1;
-    List<Move> currentMoves = [];
+    List<Move> playedMoves = [];
 
     public static Player SetPlayer()
     {
@@ -13,20 +11,30 @@ class GamePlay
         return player;
     }
 
-    public int PlayRound(int turn, Player p)
+    public int PlayTurn(int turn, Player p, Player opponent)
     {
-        if (turn == 0)
+        if (p.meteorite == 1)
         {
-            PromptMove(p);
-            Effects.WriteSlow("...", 150);
-            turn++;
+            UseSecretMove(p);
+            opponent.life = 0;
+            return turn;
         }
         else
         {
-            AutomatedMove(p);
-            turn--;
+            if (turn == 0)
+            {
+                PromptMove(p);
+                Effects.WriteSlow("...", 150);
+                turn++;
+            }
+            else
+            {
+                AutomatedMove(p);
+                turn--;
+            }
+            return turn;
         }
-        return turn;
+
     }
     public void PromptMove(Player player)
     {
@@ -44,9 +52,20 @@ class GamePlay
     public void AutomatedMove(Player player)
     {
         player.LoadStats();
-        List<string> possibleMoves = ["shoot", "block", "load", "shotgun"];
-        if (player.shots == 0) possibleMoves.Remove("shoot");
-        if (player.shots <= 3) possibleMoves.Remove("shotgun");
+        List<string> possibleMoves = ["block", "load"];
+        if (player.shots == 0) { possibleMoves.Remove("shoot"); }
+        else
+        {
+            possibleMoves.Add("shoot");
+        }
+        if (player.shots <= 3)
+        {
+            possibleMoves.Remove("shotgun");
+        }
+        else
+        {
+            possibleMoves.Add("shotgun");
+        }
 
         Random rand = new();
         Thread.Sleep(1500);
@@ -76,16 +95,16 @@ class GamePlay
                     p.UseShotGun(p);
                     break;
             }
-            Move newMove = new(p, 1, action);
-
-            p.luck += GenerateLuck();
-            if (p.luck > 15)
-            {
-                Foundmeteorite(p);
-            }
-
-            currentMoves.Add(newMove);
         }
+        Move newMove = new(p, action);
+
+        p.luck += GenerateLuck();
+        if (p.luck > 15 && action != "shotgun")
+        {
+            Foundmeteorite(p);
+        }
+
+        playedMoves.Add(newMove);
     }
 
     public void SaveMoves()
@@ -117,7 +136,7 @@ class GamePlay
         Thread.Sleep(1000);
         Effects.WriteSlow("A wise man's whisper resonates", 50);
         Thread.Sleep(1000);
-        Effects.WriteSlow($"Use the force... meteorite , {p.playerName}~", 150);
+        Effects.WriteSlow($"Use the force... err... meteorite , {p.playerName}~", 150);
         Thread.Sleep(1500);
         Effects.WriteSlow($"... {p.playerName} throws meteorite.", 50);
         p.meteorite--;
@@ -135,14 +154,14 @@ class GamePlay
     public void CheckRound()
     {
 
-        if (currentMoves.Count == 2)
+        if (playedMoves.Count == 2)
         {
-            string result = GameLogic.CompareMoves(currentMoves[0], currentMoves[1]);
+            string result = GameLogic.CompareMoves(playedMoves[0], playedMoves[1]);
             Console.WriteLine($"-------");
             Console.WriteLine(result);
             Console.WriteLine("");
             // --------------------- del later
-            Round newRound = new(currentRound, currentMoves[0], currentMoves[1]);
+            Round newRound = new(currentRound, playedMoves[0], playedMoves[1]);
             rounds.Add(newRound);
             // Console.WriteLine("Stats:");
             // foreach (var i in rounds)
@@ -152,8 +171,7 @@ class GamePlay
             //     Console.WriteLine($"{i.p2Moves.actionString}");
             // }
             currentRound++;
-            currentMoves.Clear();
-            //Effects.WriteEllipsis();
+            playedMoves.Clear();
             Console.WriteLine($"------- Round: {currentRound}");
         }
     }
@@ -169,15 +187,18 @@ class GamePlay
         //Console.WriteLine("checking for game over");
         if (player1.life == 0 || player2.life == 0)
         {
+            Console.WriteLine(player1.life == 0 ? $"{player2.playerName} won the game." : $"{player1.playerName} obliterated their opponent!");
             Console.WriteLine("Game over");
-            Console.WriteLine(player1.life == 0 ? $"{player2} won the game." : $"{player1} obliterated their opponent!");
             Effects.WriteSlow("Would you like to play again?", 50);
             Console.WriteLine("yes/no");
-            if (Console.ReadLine() == "no")
+            if (Console.ReadLine() != "yes")
             {
                 activeGame = false;
             }
+            player1.resetPlayerStats();
+            player2.resetPlayerStats();
             //rounds++;
+            currentRound = 1;
             ReadGameData();
         }
     }
