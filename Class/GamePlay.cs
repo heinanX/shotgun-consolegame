@@ -1,8 +1,6 @@
 class GamePlay
 {
-    public List<(int, string)> possibleMoves = [(1, "shoot"), (2, "shotgun"), (3, "load"), (4, "block"), (5, "secretmove"),];
     List<Round> rounds = [];
-
     int roundsPlayed = 1;
     int currentRound = 1;
     List<Move> playedMoves = [];
